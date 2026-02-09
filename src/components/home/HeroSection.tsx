@@ -20,7 +20,9 @@ export function HeroSection({
   if (!trend) {
     return (
       <section className="mb-8">
-        <p className="mb-2 text-sm text-[var(--text-muted)]">📅 {today}</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-sm text-[var(--text-muted)]">📅 {today}</p>
+        </div>
         <TrendWeatherForecast trends={trends} />
         <h2 className="mb-4 text-xl font-bold">오늘의 필수 트렌드</h2>
         <div className="glass rounded-2xl p-6 text-center">
@@ -32,7 +34,9 @@ export function HeroSection({
 
   return (
     <section className="mb-8">
-      <p className="mb-2 text-sm text-[var(--text-muted)]">📅 {today}</p>
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-sm text-[var(--text-muted)]">📅 {today}</p>
+      </div>
       <TrendWeatherForecast trends={trends} />
       <h2 className="mb-4 text-xl font-bold">오늘의 필수 트렌드</h2>
       <Link href={`/trend/${trend.id}`}>
