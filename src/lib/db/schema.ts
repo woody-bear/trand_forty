@@ -1,7 +1,14 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import {
+  pgTable,
+  serial,
+  text,
+  real,
+  integer,
+  boolean,
+} from "drizzle-orm/pg-core";
 
-export const trends = sqliteTable("trends", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const trends = pgTable("trends", {
+  id: serial("id").primaryKey(),
   keyword: text("keyword").notNull(),
   title: text("title").notNull(),
   explanation: text("explanation").notNull(),
@@ -13,30 +20,30 @@ export const trends = sqliteTable("trends", {
   naverScore: real("naver_score"),
   newsCount: integer("news_count"),
   combinedScore: real("combined_score"),
-  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
-  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  featured: boolean("featured").notNull().default(false),
+  active: boolean("active").notNull().default(true),
   displayDate: text("display_date").notNull(),
   createdAt: text("created_at")
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
 });
 
-export const categories = sqliteTable("categories", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   nameKo: text("name_ko").notNull(),
   emoji: text("emoji").notNull(),
   color: text("color").notNull(),
 });
 
-export const seedKeywords = sqliteTable("seed_keywords", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const seedKeywords = pgTable("seed_keywords", {
+  id: serial("id").primaryKey(),
   categorySlug: text("category_slug").notNull(),
   keyword: text("keyword").notNull(),
 });
 
-export const collectionLogs = sqliteTable("collection_logs", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const collectionLogs = pgTable("collection_logs", {
+  id: serial("id").primaryKey(),
   runDate: text("run_date").notNull(),
   status: text("status").notNull().default("success"),
   trendsCollected: integer("trends_collected").notNull().default(0),

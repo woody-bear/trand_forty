@@ -1,21 +1,38 @@
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: trand
+      POSTGRES_PASSWORD: trand1234
+      POSTGRES_DB: trand_forty
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trand -d trand_forty"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=file:./data/local.db
+      - DATABASE_URL=postgresql://trand:trand1234@db:5432/trand_forty
       - NAVER_CLIENT_ID=${NAVER_CLIENT_ID:-}
       - NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - CRON_SECRET=${CRON_SECRET:-my-cron-secret}
       - NEXT_PUBLIC_SITE_URL=http://localhost:3000
       - NEXT_PUBLIC_SITE_NAME=트렌드포티
-    volumes:
-      - db-data:/app/data
     restart: unless-stopped
 
 volumes:
-  db-data:
+  pgdata:

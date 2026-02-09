@@ -1,11 +1,10 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { categories, trends, seedKeywords } from "../src/lib/db/schema";
 import { CATEGORIES } from "../src/lib/constants/categories";
 
-const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || "file:./data/local.db";
-const authToken = process.env.TURSO_AUTH_TOKEN;
-const client = createClient({ url, authToken });
+const connectionString = process.env.DATABASE_URL!;
+const client = postgres(connectionString, { prepare: false });
 const db = drizzle(client);
 
 const today = new Date().toISOString().split("T")[0];
@@ -13,9 +12,9 @@ const today = new Date().toISOString().split("T")[0];
 async function seed() {
   console.log("📦 Creating tables...");
 
-  await client.execute(`
+  await client.unsafe(`
     CREATE TABLE IF NOT EXISTS categories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       slug TEXT NOT NULL UNIQUE,
       name_ko TEXT NOT NULL,
       emoji TEXT NOT NULL,
@@ -23,9 +22,9 @@ async function seed() {
     )
   `);
 
-  await client.execute(`
+  await client.unsafe(`
     CREATE TABLE IF NOT EXISTS trends (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       keyword TEXT NOT NULL,
       title TEXT NOT NULL,
       explanation TEXT NOT NULL,
@@ -37,24 +36,24 @@ async function seed() {
       naver_score REAL,
       news_count INTEGER,
       combined_score REAL,
-      featured INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1,
+      featured BOOLEAN NOT NULL DEFAULT false,
+      active BOOLEAN NOT NULL DEFAULT true,
       display_date TEXT NOT NULL,
       created_at TEXT NOT NULL
     )
   `);
 
-  await client.execute(`
+  await client.unsafe(`
     CREATE TABLE IF NOT EXISTS seed_keywords (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       category_slug TEXT NOT NULL,
       keyword TEXT NOT NULL
     )
   `);
 
-  await client.execute(`
+  await client.unsafe(`
     CREATE TABLE IF NOT EXISTS collection_logs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       run_date TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'success',
       trends_collected INTEGER NOT NULL DEFAULT 0,
@@ -84,6 +83,14 @@ async function seed() {
         .values({ categorySlug: cat.slug, keyword: kw })
         .onConflictDoNothing();
     }
+  }
+
+  // Check if trends already exist
+  const existing = await client`SELECT count(*) as cnt FROM trends`;
+  if (Number(existing[0].cnt) > 0) {
+    console.log("⏭️ Trends already seeded, skipping...");
+    await client.end();
+    process.exit(0);
   }
 
   console.log("📝 Seeding sample trends...");
@@ -186,8 +193,7 @@ async function seed() {
       explanation:
         "'어쩌라고, TV나 봐'라는 뜻의 신조어인데, 초등학생들 사이에서 유행한 표현이에요. 40대가 쓰면 정말 민망하니까 절대 쓰지 마세요. 자녀가 쓰더라도 따라하지 마세요!",
       usageExample: null,
-      usageWrong:
-        "회의에서 반대 의견에 '어쩔티비~' (👈 절대 금지!)",
+      usageWrong: "회의에서 반대 의견에 '어쩔티비~' (👈 절대 금지!)",
       category: "slang",
       dangerLevel: "danger",
       emoji: "📺",
@@ -223,33 +229,34 @@ async function seed() {
   ];
 
   for (const t of sampleTrends) {
-    await db
-      .insert(trends)
-      .values({
-        keyword: t.keyword,
-        title: t.title,
-        explanation: t.explanation,
-        usageExample: t.usageExample,
-        usageWrong: t.usageWrong,
-        category: t.category,
-        dangerLevel: t.dangerLevel,
-        emoji: t.emoji,
-        naverScore: Math.random() * 100,
-        newsCount: Math.floor(Math.random() * 50),
-        combinedScore: t.combinedScore,
-        featured: t.featured,
-        active: true,
-        displayDate: today,
-        createdAt: new Date().toISOString(),
-      })
-      .onConflictDoNothing();
+    await db.insert(trends).values({
+      keyword: t.keyword,
+      title: t.title,
+      explanation: t.explanation,
+      usageExample: t.usageExample,
+      usageWrong: t.usageWrong,
+      category: t.category,
+      dangerLevel: t.dangerLevel,
+      emoji: t.emoji,
+      naverScore: Math.random() * 100,
+      newsCount: Math.floor(Math.random() * 50),
+      combinedScore: t.combinedScore,
+      featured: t.featured,
+      active: true,
+      displayDate: today,
+      createdAt: new Date().toISOString(),
+    });
   }
 
-  console.log(`✅ Seeded ${sampleTrends.length} trends, ${CATEGORIES.length} categories`);
+  console.log(
+    `✅ Seeded ${sampleTrends.length} trends, ${CATEGORIES.length} categories`
+  );
+  await client.end();
   process.exit(0);
 }
 
-seed().catch((e) => {
+seed().catch(async (e) => {
   console.error("❌ Seed failed:", e);
+  await client.end();
   process.exit(1);
 });
