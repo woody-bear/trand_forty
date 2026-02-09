@@ -21,7 +21,7 @@ export const WEATHER_CONFIGS: WeatherConfig[] = [
   {
     level: "stormy",
     label: "폭풍",
-    description: "트렌드 지뢰밭! 오늘은 특히 조심하세요",
+    description: "매우 위험",
     colorClass: "text-red-500",
     bgGradient: "from-red-50 to-orange-50",
     darkBgGradient: "dark:from-red-950/40 dark:to-orange-950/40",
@@ -30,7 +30,7 @@ export const WEATHER_CONFIGS: WeatherConfig[] = [
   {
     level: "rainy",
     label: "비",
-    description: "위험한 트렌드 다수! 조심해서 쓰세요",
+    description: "다수 위험",
     colorClass: "text-blue-500",
     bgGradient: "from-blue-50 to-slate-100",
     darkBgGradient: "dark:from-blue-950/40 dark:to-slate-900/40",
@@ -39,7 +39,7 @@ export const WEATHER_CONFIGS: WeatherConfig[] = [
   {
     level: "cloudy",
     label: "흐림",
-    description: "주의할 트렌드가 꽤 있어요. 확인 필수!",
+    description: "주의 필요",
     colorClass: "text-gray-500",
     bgGradient: "from-gray-50 to-slate-100",
     darkBgGradient: "dark:from-gray-900/40 dark:to-slate-900/40",
@@ -48,7 +48,7 @@ export const WEATHER_CONFIGS: WeatherConfig[] = [
   {
     level: "partlyCloudy",
     label: "구름 조금",
-    description: "대체로 안전하지만, 일부 주의하세요",
+    description: "대체로 안전",
     colorClass: "text-amber-500",
     bgGradient: "from-amber-50 to-sky-50",
     darkBgGradient: "dark:from-amber-950/40 dark:to-sky-950/40",
@@ -57,7 +57,7 @@ export const WEATHER_CONFIGS: WeatherConfig[] = [
   {
     level: "sunny",
     label: "맑음",
-    description: "오늘은 트렌드 사용이 안전해요!",
+    description: "안전",
     colorClass: "text-emerald-500",
     bgGradient: "from-sky-50 to-emerald-50",
     darkBgGradient: "dark:from-sky-950/40 dark:to-emerald-950/40",

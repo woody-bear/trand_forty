@@ -22,18 +22,24 @@ export function TrendWeatherForecast({ trends }: TrendWeatherForecastProps) {
   const dangerPct = (dangerCount / total) * 100;
 
   return (
-    <div className="mb-3 flex items-center gap-3">
-      {/* Weather icon + label inline */}
-      <div className="flex items-center gap-1.5">
-        <WeatherIcon level={weather.level} size={28} />
-        <span className={`text-sm font-semibold ${weather.colorClass}`}>
+    <div className="mb-4 rounded-xl border border-[var(--border-color)] px-4 py-3">
+      {/* Row 1: label + weather */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium text-[var(--text-muted)]">
+          오늘의 위험도
+        </span>
+        <WeatherIcon level={weather.level} size={24} />
+        <span className={`text-sm font-bold ${weather.colorClass}`}>
           {weather.label}
+        </span>
+        <span className="text-xs text-[var(--text-muted)]">
+          · {weather.description}
         </span>
       </div>
 
-      {/* Compact bar + counts */}
-      <div className="flex min-w-0 flex-1 items-center gap-2.5">
-        <div className="flex h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--border-color)]">
+      {/* Row 2: bar + legend */}
+      <div className="mt-2 flex items-center gap-3">
+        <div className="flex h-2 flex-1 overflow-hidden rounded-full bg-[var(--border-color)]">
           {safePct > 0 && (
             <div
               className="bg-emerald-500 transition-all duration-500"
@@ -53,9 +59,20 @@ export function TrendWeatherForecast({ trends }: TrendWeatherForecastProps) {
             />
           )}
         </div>
-        <span className="shrink-0 text-[11px] text-[var(--text-muted)]">
-          {safeCount}·{cautionCount}·{dangerCount}
-        </span>
+        <div className="flex shrink-0 gap-2 text-[11px] text-[var(--text-muted)]">
+          <span className="flex items-center gap-0.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            안심{safeCount}
+          </span>
+          <span className="flex items-center gap-0.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-500" />
+            주의{cautionCount}
+          </span>
+          <span className="flex items-center gap-0.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-red-500" />
+            위험{dangerCount}
+          </span>
+        </div>
       </div>
     </div>
   );
