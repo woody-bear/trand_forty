@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./data/local.db
+      - NAVER_CLIENT_ID=${NAVER_CLIENT_ID:-}
+      - NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - CRON_SECRET=${CRON_SECRET:-my-cron-secret}
+      - NEXT_PUBLIC_SITE_URL=http://localhost:3000
+      - NEXT_PUBLIC_SITE_NAME=트렌드포티
+    volumes:
+      - db-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  db-data:
