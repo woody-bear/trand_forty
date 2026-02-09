@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   const router = useRouter();
@@ -45,7 +44,6 @@ export function Header() {
               </button>
             </div>
           </form>
-          <ThemeToggle />
         </div>
       </div>
     </header>

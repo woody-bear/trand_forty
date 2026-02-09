@@ -33,7 +33,7 @@ export default function HomePage() {
     <>
       <TrendingNowBar trends={trends.slice(0, 8)} />
       <div className="mx-auto max-w-5xl px-4 py-6">
-        <HeroSection trend={featured || null} />
+        <HeroSection trend={featured || null} trends={trends} />
 
         <section>
           <div className="mb-4">

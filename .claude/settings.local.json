@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:api.ncloud-docs.com)",
+      "WebFetch(domain:guide.ncloud-docs.com)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:robingeuens.com)",
+      "WebFetch(domain:willmanntobias.medium.com)",
+      "WebFetch(domain:docs.ncloud.com)",
+      "WebFetch(domain:www.searchapi.io)"
+    ]
+  }
+}

@@ -1,9 +1,16 @@
 import type { Trend, DangerLevel } from "@/types/trend";
 import { DangerBadge } from "@/components/trend/DangerBadge";
 import { CategoryBadge } from "@/components/trend/CategoryBadge";
+import { TrendWeatherForecast } from "./TrendWeatherForecast";
 import Link from "next/link";
 
-export function HeroSection({ trend }: { trend: Trend | null }) {
+export function HeroSection({
+  trend,
+  trends = [],
+}: {
+  trend: Trend | null;
+  trends?: Trend[];
+}) {
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -14,6 +21,7 @@ export function HeroSection({ trend }: { trend: Trend | null }) {
     return (
       <section className="mb-8">
         <p className="mb-2 text-sm text-[var(--text-muted)]">📅 {today}</p>
+        <TrendWeatherForecast trends={trends} />
         <h2 className="mb-4 text-xl font-bold">오늘의 필수 트렌드</h2>
         <div className="glass rounded-2xl p-6 text-center">
           <p className="text-[var(--text-muted)]">오늘의 트렌드를 준비 중이에요...</p>
@@ -25,6 +33,7 @@ export function HeroSection({ trend }: { trend: Trend | null }) {
   return (
     <section className="mb-8">
       <p className="mb-2 text-sm text-[var(--text-muted)]">📅 {today}</p>
+      <TrendWeatherForecast trends={trends} />
       <h2 className="mb-4 text-xl font-bold">오늘의 필수 트렌드</h2>
       <Link href={`/trend/${trend.id}`}>
         <div className="glass group rounded-2xl p-6 transition-all hover:shadow-lg">
