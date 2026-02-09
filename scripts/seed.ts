@@ -3,8 +3,9 @@ import { drizzle } from "drizzle-orm/libsql";
 import { categories, trends, seedKeywords } from "../src/lib/db/schema";
 import { CATEGORIES } from "../src/lib/constants/categories";
 
-const url = process.env.DATABASE_URL || "file:./data/local.db";
-const client = createClient({ url });
+const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || "file:./data/local.db";
+const authToken = process.env.TURSO_AUTH_TOKEN;
+const client = createClient({ url, authToken });
 const db = drizzle(client);
 
 const today = new Date().toISOString().split("T")[0];
